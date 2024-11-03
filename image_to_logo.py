@@ -1,6 +1,7 @@
 import os
 from PIL import Image
-import cairosvg
+import base64
+import svgwrite
 
 file_path = input("Enter the image file name or path: ")
 directory = os.path.dirname(file_path)
@@ -31,7 +32,13 @@ try:
     background.save(ico_path, format='ICO', sizes=[(48, 48)])
     
     svg_path = os.path.join(output_dir, f"{filename}.svg")
-    cairosvg.png2svg(url=png_path, write_to=svg_path)
+    dwg = svgwrite.Drawing(svg_path, profile='tiny', size=(512, 512))
+    
+    with open(png_path, "rb") as image_file:
+        encoded_png = base64.b64encode(image_file.read()).decode()
+
+    dwg.add(dwg.image(href=f"data:image/png;base64,{encoded_png}", insert=(0, 0), size=("512px", "512px")))
+    dwg.save()
 
     print(f'Files saved in {output_dir}')
 except FileNotFoundError:
