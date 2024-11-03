@@ -1,5 +1,6 @@
 import os
 from PIL import Image
+import cairosvg
 
 file_path = input("Enter the image file name or path: ")
 directory = os.path.dirname(file_path)
