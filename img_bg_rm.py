@@ -8,6 +8,19 @@ directory = os.path.dirname(file_path)
 file = os.path.basename(file_path)
 filename, _ = os.path.splitext(file)
 
+def compress_png_with_pngquant(png_path):
+    try:
+        subprocess.run([
+            'pngquant',
+            '--quality=65-90',
+            '--ext', '.png',
+            '--force',
+            png_path
+        ], check=True)
+        print(f"Compressed {png_path} successfully.")
+    except subprocess.CalledProcessError:
+        print(f"Error compressing {png_path}.")
+        
 try:
     img = Image.open(file_path)
     no_bg = remove(img)
@@ -15,7 +28,8 @@ try:
     output_dir = os.path.join(directory, f"img_bg_rm_{filename}")
     os.makedirs(output_dir, exist_ok=True)
     png_path = os.path.join(output_dir, f"{filename}.png")
-    no_bg.save(png_path, optimize=True)
+    no_bg.save(png_path)
+    compress_png_with_pngquant(png_path)
 
     print(f'Files saved in {output_dir}')
 except FileNotFoundError:
